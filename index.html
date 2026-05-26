@@ -335,7 +335,7 @@ const API = `https://api.mcsrvstat.us/bedrock/3/${SERVER_IP}:${SERVER_PORT}`;
 function copyText(textToCopy, successMessage) {
     navigator.clipboard.writeText(textToCopy);
     const toast = document.getElementById("toast");
-    toast.innerText = successMessage; // Muda o aviso verde dependendo de onde o usuário clicou
+    toast.innerText = successMessage;
     toast.classList.add("show");
     
     setTimeout(() => { toast.classList.remove("show"); }, 2000);
@@ -355,7 +355,14 @@ function joinServer() {
     window.open(`minecraft://?addExternalServer=EclipsePoke|${SERVER_IP}:${SERVER_PORT}`, '_blank');
 }
 
-// Lógica de Monitoramento e Estados
+// Simulação de TPS
+setInterval(() => {
+    const randomTPS = (Math.random() * (20.0 - 19.8) + 19.8).toFixed(1);
+    const tpsElement = document.getElementById("tpsValue");
+    if (tpsElement) tpsElement.innerText = randomTPS;
+}, 3000);
+
+// Lógica de Monitoramento e Estados (API Pública)
 async function fetchServer() {
     try {
         const response = await fetch(API);
@@ -402,88 +409,6 @@ function setDynamicTheme() {
     const bg = document.getElementById('ambientBg');
     
     if (hour >= 0 && hour <= 5) {
-        bg.style.background = `
-            radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.25), transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(90, 0, 255, 0.15), transparent 50%)`;
-    } 
-    else if (hour >= 6 && hour <= 17) {
-        bg.style.background = `
-            radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 60%)`;
-    } 
-    else {
-        bg.style.background = `
-            radial-gradient(circle at 10% 80%, rgba(30, 58, 138, 0.2), transparent 50%),
-            radial-gradient(circle at 90% 10%, rgba(17, 24, 39, 0.8), transparent 50%)`;
-    }
-}
-
-<script>
-const SERVER_IP = "gaming-11.bedhosting.com.br";
-const SERVER_PORT = "25180";
-const API = `https://api.mcsrvstat.us/bedrock/3/${SERVER_IP}:${SERVER_PORT}`;
-
-function copyText(textToCopy, successMessage) {
-    navigator.clipboard.writeText(textToCopy);
-    const toast = document.getElementById("toast");
-    toast.innerText = successMessage;
-    toast.classList.add("show");
-    setTimeout(() => { toast.classList.remove("show"); }, 2000);
-}
-
-function joinServer() {
-    navigator.clipboard.writeText(SERVER_IP);
-    const toast = document.getElementById("toast");
-    toast.innerText = "IP copiado! Tentando abrir o Minecraft...";
-    toast.classList.add("show");
-    setTimeout(() => { toast.classList.remove("show"); }, 2500);
-    window.open(`minecraft://?addExternalServer=EclipsePoke|${SERVER_IP}:${SERVER_PORT}`, '_blank');
-}
-
-async function fetchServer() {
-    try {
-        const response = await fetch(API);
-        const data = await response.json();
-
-        const playerCount = document.getElementById("playerCount");
-        const pingValue = document.getElementById("pingValue");
-        const serverState = document.getElementById("serverState");
-        const statusDot = document.getElementById("statusDot");
-
-        const barsOnline = `<div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
-        const barsOffline = `<div class="signal-bars offline"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
-
-        if (data.online) {
-            const online = data.players.online || 0;
-            const max = data.players.max || 100;
-            playerCount.innerText = `${online}/${max}`;
-
-            const ping = data.debug && data.debug.ping ? data.debug.ping : Math.floor(Math.random() * 20) + 18;
-            pingValue.innerText = `${ping} ms`;
-
-            if (online >= max && max > 0) {
-                statusDot.className = "status-dot status-full";
-                serverState.innerHTML = `${barsOnline} <span style="color:#a855f7">LOTADO</span>`;
-            } else {
-                statusDot.className = "status-dot status-online";
-                serverState.innerHTML = `${barsOnline} <span style="color:#23a559">ONLINE</span>`;
-            }
-
-        } else {
-            playerCount.innerText = "0/0";
-            pingValue.innerText = "-- ms";
-            statusDot.className = "status-dot status-offline";
-            serverState.innerHTML = `${barsOffline} <span style="color:#f23f42">OFFLINE</span>`;
-        }
-    } catch (err) {
-        document.getElementById("statusDot").className = "status-dot status-offline";
-    }
-}
-
-function setDynamicTheme() {
-    const hour = new Date().getHours();
-    const bg = document.getElementById('ambientBg');
-    
-    if (hour >= 0 && hour <= 5) {
         bg.style.background = `radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.25), transparent 50%), radial-gradient(circle at 80% 20%, rgba(90, 0, 255, 0.15), transparent 50%)`;
     } else if (hour >= 6 && hour <= 17) {
         bg.style.background = `radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 60%)`;
@@ -492,6 +417,7 @@ function setDynamicTheme() {
     }
 }
 
+// Inicializadores
 setDynamicTheme();
 fetchServer();
 setInterval(fetchServer, 30000);
