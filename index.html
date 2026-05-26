@@ -439,11 +439,6 @@ function joinServer() {
     window.open(`minecraft://?addExternalServer=EclipsePoke|${SERVER_IP}:${SERVER_PORT}`, '_blank');
 }
 
-setInterval(() => {
-    const randomTPS = (Math.random() * (20.0 - 19.8) + 19.8).toFixed(1);
-    document.getElementById("tpsValue").innerText = randomTPS;
-}, 3000);
-
 async function fetchServer() {
     try {
         const response = await fetch(API);
