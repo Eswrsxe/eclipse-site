@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<title>EclipsePoke • Perfil</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+<style>
+/* =========================================================
+   RESET & FUNDO COM BLUR
+========================================================= */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+    width:100%; height:100%;
+    font-family:'Inter',sans-serif;
+    overflow:hidden;
+}
+
+body {
+    background-color: #000;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    position:relative;
+    transition: background 2s ease;
+}
+
+.ambient-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.6;
+    background: 
+        radial-gradient(circle at 15% 50%, rgba(147, 51, 234, 0.15), transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.1), transparent 40%);
+    animation: mistFloat 15s ease-in-out infinite alternate;
+}
+
+@keyframes mistFloat {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.1) translate(20px, -20px); }
+}
+
+.app-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* =========================================================
+   CARD DO PERFIL (BOUNCE & SWIPE)
+========================================================= */
+.discord-profile {
+    width:100%;
+    max-width:400px;
+    background:#232428;
+    border-radius: 24px 24px 0 0;
+    overflow:hidden;
+    position:relative;
+    z-index: 2;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.5), 0 0 40px rgba(147, 51, 234, 0.15);
+    transform: translateY(100%);
+    animation: slideUpBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@media(min-width: 431px) {
+    body { align-items: center; }
+    .discord-profile {
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+        transform: translateY(40px) scale(0.95);
+        animation: modalBounceDesktop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+}
+
+@keyframes slideUpBounce { to { transform: translateY(0); } }
+@keyframes modalBounceDesktop { to { transform: translateY(0) scale(1); } }
+
+.swipe-handle {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    z-index: 10;
+}
+
+/* =========================================================
+   BANNER E PERFIL INTERNO
+========================================================= */
+.profile-banner {
+    width:100%; height:150px;
+    background-image:url('https://s10.aconvert.com/convert/p3r68-cdx67/aoj0j-rzmwz.gif');
+    background-size:cover; background-position:center;
+    position:relative;
+}
+.profile-banner::after {
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(to bottom, transparent, rgba(35,36,40,0.9));
+}
+
+.profile-options {
+    position:absolute; top:16px; right:16px;
+    width:36px; height:36px; border-radius:50%;
+    background:rgba(0,0,0,0.45); backdrop-filter:blur(10px);
+    display:flex; align-items:center; justify-content:center;
+    z-index:5; cursor:pointer;
+}
+
+.profile-content { padding:0 16px 24px; position:relative; }
+
+.avatar-area {
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top:-52px; margin-bottom:12px;
+}
+.avatar-wrapper { position:relative; z-index: 5; }
+.avatar {
+    width:92px; height:92px; border-radius:50%;
+    border:6px solid #232428; overflow:hidden; background:#111214;
+}
+.avatar img { width:100%; height:100%; object-fit:cover; }
+
+/* =========================================================
+   BOLINHA DE STATUS
+========================================================= */
+.status-dot {
+    position:absolute; right:2px; bottom:2px;
+    width:24px; height:24px; border-radius:50%;
+    border:5px solid #232428; transition:all 0.3s ease;
+}
+.status-online { background:#23a559; }
+.status-offline { background:#f23f42; }
+.status-restarting {
+    background: #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+    animation: pulseOrange 1.5s infinite;
+}
+.status-full {
+    background:#a855f7;
+    box-shadow: 0 0 12px rgba(168,85,247,0.9), 0 0 25px rgba(168,85,247,0.5);
+    animation: glowPurple 2s infinite alternate;
+}
+@keyframes pulseOrange {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+@keyframes glowPurple {
+    from { box-shadow: 0 0 8px rgba(168,85,247,0.6); }
+    to { box-shadow: 0 0 20px rgba(168,85,247,1), 0 0 35px rgba(168,85,247,0.6); }
+}
+
+/* =========================================================
+   TEXTOS E BOTOES
+========================================================= */
+.players-card {
+    background:rgba(17,18,20,0.8); border:1px solid rgba(255,255,255,0.05);
+    backdrop-filter:blur(10px); padding:8px 12px; border-radius:12px;
+    display:flex; align-items:center; gap:8px; margin-bottom:12px; z-index: 5;
+}
+.players-card i { color:#00a8fc; font-size:12px; }
+.players-card span { font-size:13px; font-weight:700; }
+
+.user-name { display:flex; align-items:center; gap:8px; font-size:22px; font-weight:800; margin-bottom:2px; }
+.app-badge { background:#5865f2; padding:3px 6px; border-radius:6px; font-size:9px; font-weight:800; }
+.user-tag { color:#b5bac1; font-size:14px; font-weight:500; margin-bottom:16px; }
+
+.join-btn {
+    width:100%; border:none; height:44px; border-radius:12px;
+    background:#2b2d31; color:#fff; font-size:14px; font-weight:600;
+    cursor:pointer; transition:background 0.2s; margin-bottom:16px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.join-btn:hover { background:#313338; }
+
+/* =========================================================
+   PAINEL DE INFORMAÇÕES
+========================================================= */
+.info-card { background:#111214; border-radius:16px; padding:16px; border:1px solid rgba(255,255,255,.03); }
+.info-title { font-size:12px; font-weight:800; margin-bottom:12px; color:#b5bac1; letter-spacing:0.5px; }
+
+/* Bloco copiável padrão (IP e IP Reserva) */
+.copyable-box { 
+    background:#23252b; border-radius:12px; padding:12px 14px; 
+    display:flex; justify-content:space-between; align-items:center; 
+    cursor:pointer; margin-bottom:10px; transition: 0.2s;
+}
+.copyable-box:hover { background: #2b2d31; }
+.box-label { font-size:10px; color:#949ba4; font-weight:800; margin-bottom:4px; }
+.box-value { font-size:14px; color:#00a8fc; font-weight:600; }
+
+/* Grid (Porta e Status) */
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.small-box { background:#1b1c21; border-radius:12px; padding:12px; transition: 0.2s; }
+.small-label { color:#949ba4; font-size:10px; font-weight:800; margin-bottom:6px; }
+.small-value { font-size:14px; font-weight:700; display:flex; align-items:center; gap:6px; }
+
+/* Classe para tornar caixas pequenas copiáveis (Porta) */
+.clickable-small { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.clickable-small:hover { background: #2b2d31; }
+
+.signal-bars { display:flex; align-items:flex-end; gap:2px; height:12px; }
+.signal-bars .bar { width:3px; background:#23a559; border-radius:2px; box-shadow:0 0 6px rgba(35,165,89,0.8); }
+.signal-bars .bar:nth-child(1) { height:4px; }
+.signal-bars .bar:nth-child(2) { height:7px; }
+.signal-bars .bar:nth-child(3) { height:10px; }
+.signal-bars .bar:nth-child(4) { height:13px; }
+.signal-bars.offline .bar { background:#4f545c; box-shadow:none; }
+.signal-bars.offline .bar:nth-child(1) { background:#f23f42; box-shadow:0 0 6px rgba(242,63,66,0.8); }
+
+.latency-box { background:#1b1c21; border-radius:12px; padding:14px; }
+.lat-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.lat-row:last-child { margin-bottom:0; }
+.lat-left { display:flex; align-items:center; gap:8px; color:#949ba4; font-size:13px; font-weight:600; }
+.divider { width:100%; height:1px; background:rgba(255,255,255,0.05); margin-bottom:12px; }
+
+.toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+    background:#23a559; color:#fff; padding:10px 16px; border-radius:10px;
+    font-size:13px; font-weight:600; opacity:0; pointer-events:none; transition:0.3s; z-index:999;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(-10px); }
+</style>
+</head>
+
+<body>
+
+<div class="ambient-background" id="ambientBg"></div>
+<div class="app-overlay"></div>
+
+<div class="discord-profile">
+    <div class="swipe-handle"></div>
+
+    <div class="profile-banner"></div>
+    <div class="profile-options"><i class="fas fa-ellipsis text-white text-sm"></i></div>
+
+    <div class="profile-content">
+        <div class="avatar-area">
+            <div class="avatar-wrapper">
+                <div class="avatar">
+                    <img src="https://s10.aconvert.com/convert/p3r68-cdx67/al9vw-hlx8m.jpg">
+                </div>
+                <div id="statusDot" class="status-dot status-offline"></div>
+            </div>
+
+            <div class="players-card">
+                <i class="fas fa-user-friends"></i>
+                <span id="playerCount">0/100</span>
+            </div>
+        </div>
+
+        <div class="user-name">🌗 | EclipsePoke <span class="app-badge">APP</span></div>
+        <div class="user-tag">EclipsePoke#4955</div>
+
+        <button class="join-btn" onclick="joinServer()">
+            <i class="fas fa-play text-[#23a559]"></i> Entrar no Servidor
+        </button>
+
+        <div class="info-card">
+            <div class="info-title">SOBRE O SERVIDOR</div>
+
+            <div class="copyable-box" onclick="copyText('gaming-11.bedhosting.com.br', 'IP Principal copiado!')">
+                <div>
+                    <div class="box-label">ENDEREÇO (IP)</div>
+                    <div class="box-value">gaming-11.bedhosting.com.br</div>
+                </div>
+                <i class="far fa-copy text-[#949ba4]"></i>
+            </div>
+
+            <div class="info-grid">
+                <div class="small-box clickable-small" onclick="copyText('25180', 'Porta copiada!')">
+                    <div>
+                        <div class="small-label">PORTA</div>
+                        <div class="small-value">25180</div>
+                    </div>
+                    <i class="far fa-copy text-[#949ba4]"></i>
+                </div>
+                
+                <div class="small-box">
+                    <div class="small-label">STATUS</div>
+                    <div class="small-value" id="serverState">
+                        <div class="signal-bars offline"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                        <span style="color:#f23f42">OFFLINE</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyable-box" onclick="copyText('eclipseSeason3.bed.net.br', 'IP Reserva copiado!')" style="margin-bottom: 14px;">
+                <div>
+                    <div class="box-label">IP RESERVA</div>
+                    <div class="box-value">eclipseSeason3.bed.net.br</div>
+                </div>
+                <i class="far fa-copy text-[#949ba4]"></i>
+            </div>
+
+            <div class="latency-box">
+                <div class="lat-row">
+                    <div class="lat-left"><i class="fas fa-wifi"></i> Latência</div>
+                    <div id="pingValue" style="font-weight: 600; font-size: 14px;">-- ms</div>
+                </div>
+                <div class="divider"></div>
+                <div class="lat-row">
+                    <div class="lat-left"><i class="fas fa-microchip"></i> TPS (Simulado)</div>
+                    <div id="tpsValue" style="font-weight: 600; font-size: 14px;">20.0</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast">Notificação padrão</div>
+
+<script>
+const SERVER_IP = "gaming-11.bedhosting.com.br";
+const SERVER_PORT = "25180";
+const API = `https://api.mcsrvstat.us/bedrock/3/${SERVER_IP}:${SERVER_PORT}`;
+
+// Função única e inteligente para copiar qualquer coisa do painel
+function copyText(textToCopy, successMessage) {
+    navigator.clipboard.writeText(textToCopy);
+    const toast = document.getElementById("toast");
+    toast.innerText = successMessage; // Muda o aviso verde dependendo de onde o usuário clicou
+    toast.classList.add("show");
+    
+    setTimeout(() => { toast.classList.remove("show"); }, 2000);
+}
+
+// Abrir servidor com deep link
+function joinServer() {
+    navigator.clipboard.writeText(SERVER_IP);
+    
+    const toast = document.getElementById("toast");
+    toast.innerText = "IP copiado! Tentando abrir o Minecraft...";
+    toast.classList.add("show");
+    
+    setTimeout(() => { toast.classList.remove("show"); }, 2500);
+
+    // Ajustado para abrir o app do jogo, ignorando bloqueios em alguns navegadores mobile
+    window.open(`minecraft://?addExternalServer=EclipsePoke|${SERVER_IP}:${SERVER_PORT}`, '_blank');
+}
+
+// Simulação de TPS
+setInterval(() => {
+    const randomTPS = (Math.random() * (20.0 - 19.8) + 19.8).toFixed(1);
+    document.getElementById("tpsValue").innerText = randomTPS;
+}, 3000);
+
+// Lógica de Monitoramento e Estados
+async function fetchServer() {
+    try {
+        const response = await fetch(API);
+        const data = await response.json();
+
+        const playerCount = document.getElementById("playerCount");
+        const pingValue = document.getElementById("pingValue");
+        const serverState = document.getElementById("serverState");
+        const statusDot = document.getElementById("statusDot");
+
+        const barsOnline = `<div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
+        const barsOffline = `<div class="signal-bars offline"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
+
+        if (data.online) {
+            const online = data.players.online || 0;
+            const max = data.players.max || 100;
+            playerCount.innerText = `${online}/${max}`;
+
+            const ping = data.debug && data.debug.ping ? data.debug.ping : Math.floor(Math.random() * 20) + 18;
+            pingValue.innerText = `${ping} ms`;
+
+            if (online >= max && max > 0) {
+                statusDot.className = "status-dot status-full";
+                serverState.innerHTML = `${barsOnline} <span style="color:#a855f7">LOTADO</span>`;
+            } else {
+                statusDot.className = "status-dot status-online";
+                serverState.innerHTML = `${barsOnline} <span style="color:#23a559">ONLINE</span>`;
+            }
+
+        } else {
+            playerCount.innerText = "0/0";
+            pingValue.innerText = "-- ms";
+            statusDot.className = "status-dot status-offline";
+            serverState.innerHTML = `${barsOffline} <span style="color:#f23f42">OFFLINE</span>`;
+        }
+    } catch (err) {
+        document.getElementById("statusDot").className = "status-dot status-offline";
+    }
+}
+
+// Clima e Cores baseado na hora real
+function setDynamicTheme() {
+    const hour = new Date().getHours();
+    const bg = document.getElementById('ambientBg');
+    
+    if (hour >= 0 && hour <= 5) {
+        bg.style.background = `
+            radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.25), transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(90, 0, 255, 0.15), transparent 50%)`;
+    } 
+    else if (hour >= 6 && hour <= 17) {
+        bg.style.background = `
+            radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 60%)`;
+    } 
+    else {
+        bg.style.background = `
+            radial-gradient(circle at 10% 80%, rgba(30, 58, 138, 0.2), transparent 50%),
+            radial-gradient(circle at 90% 10%, rgba(17, 24, 39, 0.8), transparent 50%)`;
+    }
+}
+
+// O site agora aponta para a API do SEU bot (rodando localmente na porta 3000)
+const BOT_API = 'http://localhost:3000/api';
+
+// 1. Função que puxa a Foto do Perfil Dinâmica
+async function carregarPerfilBot() {
+    try {
+        const resposta = await fetch(`${BOT_API}/perfil`);
+        const dados = await resposta.json();
+        
+        // Pega a tag <img> do avatar pelo ID (precisamos colocar id="bot-avatar" na imagem lá no HTML)
+        const imagemAvatar = document.getElementById('bot-avatar');
+        imagemAvatar.src = dados.avatar;
+    } catch (erro) {
+        console.log("Aguardando bot ficar online para puxar a foto...");
+    }
+}
+
+// 2. Função Zero-Delay para o Status do Servidor
+async function fetchServer() {
+    try {
+        const response = await fetch(`${BOT_API}/status`);
+        const data = await response.json();
+
+        const playerCount = document.getElementById("playerCount");
+        const pingValue = document.getElementById("pingValue");
+        const serverState = document.getElementById("serverState");
+        const statusDot = document.getElementById("statusDot");
+
+        const barsOnline = `<div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
+        const barsOffline = `<div class="signal-bars offline"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
+
+        if (data.online) {
+            playerCount.innerText = `${data.players}/${data.max}`;
+            pingValue.innerText = `${data.ping} ms`;
+
+            if (data.players >= data.max && data.max > 0) {
+                statusDot.className = "status-dot status-full";
+                serverState.innerHTML = `${barsOnline} <span style="color:#a855f7">LOTADO</span>`;
+            } else {
+                statusDot.className = "status-dot status-online";
+                serverState.innerHTML = `${barsOnline} <span style="color:#23a559">ONLINE</span>`;
+            }
+
+        } else {
+            // Se o bot disser que tá offline
+            playerCount.innerText = "0/0";
+            pingValue.innerText = "-- ms";
+            statusDot.className = "status-dot status-offline";
+            serverState.innerHTML = `${barsOffline} <span style="color:#f23f42">OFFLINE</span>`;
+        }
+    } catch (err) {
+        // Se a API do bot não responder
+        document.getElementById("statusDot").className = "status-dot status-offline";
+    }
+}
+
+// Inicializadores
+carregarPerfilBot();
+fetchServer();
+
+// O site agora pode atualizar a cada 5 segundos sem pesar, porque a consulta é feita direto na mesma máquina!
+setInterval(fetchServer, 5000); 
+</script>
+
+</body>
+</html>
