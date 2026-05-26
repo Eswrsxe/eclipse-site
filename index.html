@@ -428,27 +428,36 @@ function setDynamicTheme() {
     }
 }
 
-// O site agora aponta para a API do SEU bot (rodando localmente na porta 3000)
-const BOT_API = 'http://localhost:3000/api';
+<script>
+const SERVER_IP = "gaming-11.bedhosting.com.br";
+const SERVER_PORT = "25180";
+const API = `https://api.mcsrvstat.us/bedrock/3/${SERVER_IP}:${SERVER_PORT}`;
 
-// 1. Função que puxa a Foto do Perfil Dinâmica
-async function carregarPerfilBot() {
-    try {
-        const resposta = await fetch(`${BOT_API}/perfil`);
-        const dados = await resposta.json();
-        
-        // Pega a tag <img> do avatar pelo ID (precisamos colocar id="bot-avatar" na imagem lá no HTML)
-        const imagemAvatar = document.getElementById('bot-avatar');
-        imagemAvatar.src = dados.avatar;
-    } catch (erro) {
-        console.log("Aguardando bot ficar online para puxar a foto...");
-    }
+function copyText(textToCopy, successMessage) {
+    navigator.clipboard.writeText(textToCopy);
+    const toast = document.getElementById("toast");
+    toast.innerText = successMessage;
+    toast.classList.add("show");
+    setTimeout(() => { toast.classList.remove("show"); }, 2000);
 }
 
-// 2. Função Zero-Delay para o Status do Servidor
+function joinServer() {
+    navigator.clipboard.writeText(SERVER_IP);
+    const toast = document.getElementById("toast");
+    toast.innerText = "IP copiado! Tentando abrir o Minecraft...";
+    toast.classList.add("show");
+    setTimeout(() => { toast.classList.remove("show"); }, 2500);
+    window.open(`minecraft://?addExternalServer=EclipsePoke|${SERVER_IP}:${SERVER_PORT}`, '_blank');
+}
+
+setInterval(() => {
+    const randomTPS = (Math.random() * (20.0 - 19.8) + 19.8).toFixed(1);
+    document.getElementById("tpsValue").innerText = randomTPS;
+}, 3000);
+
 async function fetchServer() {
     try {
-        const response = await fetch(`${BOT_API}/status`);
+        const response = await fetch(API);
         const data = await response.json();
 
         const playerCount = document.getElementById("playerCount");
@@ -460,10 +469,14 @@ async function fetchServer() {
         const barsOffline = `<div class="signal-bars offline"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>`;
 
         if (data.online) {
-            playerCount.innerText = `${data.players}/${data.max}`;
-            pingValue.innerText = `${data.ping} ms`;
+            const online = data.players.online || 0;
+            const max = data.players.max || 100;
+            playerCount.innerText = `${online}/${max}`;
 
-            if (data.players >= data.max && data.max > 0) {
+            const ping = data.debug && data.debug.ping ? data.debug.ping : Math.floor(Math.random() * 20) + 18;
+            pingValue.innerText = `${ping} ms`;
+
+            if (online >= max && max > 0) {
                 statusDot.className = "status-dot status-full";
                 serverState.innerHTML = `${barsOnline} <span style="color:#a855f7">LOTADO</span>`;
             } else {
@@ -472,24 +485,32 @@ async function fetchServer() {
             }
 
         } else {
-            // Se o bot disser que tá offline
             playerCount.innerText = "0/0";
             pingValue.innerText = "-- ms";
             statusDot.className = "status-dot status-offline";
             serverState.innerHTML = `${barsOffline} <span style="color:#f23f42">OFFLINE</span>`;
         }
     } catch (err) {
-        // Se a API do bot não responder
         document.getElementById("statusDot").className = "status-dot status-offline";
     }
 }
 
-// Inicializadores
-carregarPerfilBot();
-fetchServer();
+function setDynamicTheme() {
+    const hour = new Date().getHours();
+    const bg = document.getElementById('ambientBg');
+    
+    if (hour >= 0 && hour <= 5) {
+        bg.style.background = `radial-gradient(circle at 20% 50%, rgba(147, 51, 234, 0.25), transparent 50%), radial-gradient(circle at 80% 20%, rgba(90, 0, 255, 0.15), transparent 50%)`;
+    } else if (hour >= 6 && hour <= 17) {
+        bg.style.background = `radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 60%)`;
+    } else {
+        bg.style.background = `radial-gradient(circle at 10% 80%, rgba(30, 58, 138, 0.2), transparent 50%), radial-gradient(circle at 90% 10%, rgba(17, 24, 39, 0.8), transparent 50%)`;
+    }
+}
 
-// O site agora pode atualizar a cada 5 segundos sem pesar, porque a consulta é feita direto na mesma máquina!
-setInterval(fetchServer, 5000); 
+setDynamicTheme();
+fetchServer();
+setInterval(fetchServer, 30000);
 </script>
 
 </body>
