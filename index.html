@@ -318,11 +318,6 @@ body {
                     <div class="lat-left"><i class="fas fa-wifi"></i> Latência</div>
                     <div id="pingValue" style="font-weight: 600; font-size: 14px;">-- ms</div>
                 </div>
-                <div class="divider"></div>
-                <div class="lat-row">
-                    <div class="lat-left"><i class="fas fa-microchip"></i> TPS (Simulado)</div>
-                    <div id="tpsValue" style="font-weight: 600; font-size: 14px;">20.0</div>
-                </div>
             </div>
 
         </div>
@@ -359,12 +354,6 @@ function joinServer() {
     // Ajustado para abrir o app do jogo, ignorando bloqueios em alguns navegadores mobile
     window.open(`minecraft://?addExternalServer=EclipsePoke|${SERVER_IP}:${SERVER_PORT}`, '_blank');
 }
-
-// Simulação de TPS
-setInterval(() => {
-    const randomTPS = (Math.random() * (20.0 - 19.8) + 19.8).toFixed(1);
-    document.getElementById("tpsValue").innerText = randomTPS;
-}, 3000);
 
 // Lógica de Monitoramento e Estados
 async function fetchServer() {
